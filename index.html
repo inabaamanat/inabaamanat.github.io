@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inaba Amanat — Electrical &amp; Computer Engineering</title>
+<meta name="description" content="Inaba Amanat — Texas Robotics Honors student at UT Austin, working in robotics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f6f4;
+    --panel:#efece7;
+    --ink:#1c1c1e;
+    --muted:#6b6b68;
+    --line:#d9d6d0;
+    --accent:#bf5700; /* used sparingly */
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --maxw: 760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation:none !important; transition:none !important;}
+  }
+
+  a{color:inherit;}
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---- top bar ---- */
+  header.hero{
+    padding:96px 0 64px;
+    border-bottom:1px solid var(--line);
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 18px;
+  }
+  .eyebrow::before{content:"// ";color:var(--accent);}
+  h1.name{
+    font-size:clamp(38px,6vw,58px);
+    line-height:1.05;
+    margin:0 0 14px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .role{
+    font-size:17px;
+    color:var(--muted);
+    margin:0 auto 28px;
+    max-width:52ch;
+  }
+  .links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+  }
+  .pill{
+    font-family:var(--mono);
+    font-size:13px;
+    padding:8px 14px;
+    border:1px solid var(--line);
+    border-radius:100px;
+    text-decoration:none;
+    color:var(--ink);
+    transition:border-color .2s, transform .2s;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .pill:hover{border-color:var(--accent); transform:translateY(-1px);}
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+
+  /* ---- sections ---- */
+  section{
+    padding:64px 0;
+    border-bottom:1px solid var(--line);
+    scroll-margin-top:40px;
+  }
+  section:last-of-type{border-bottom:none;}
+  .section-head{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    margin-bottom:12px;
+    text-align:center;
+  }
+  h2{
+    font-size:22px;
+    margin:0;
+    font-weight:600;
+  }
+  p{margin:0 0 16px; color:var(--ink);}
+  .lede{color:var(--muted); font-size:16px; max-width:60ch; margin:0 auto 16px; text-align:center;}
+
+  /* current status card */
+  .status-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 24px;
+    margin-top:20px;
+  }
+  .status-row{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding:10px 0;
+  }
+  .status-row + .status-row{border-top:1px dashed var(--line);}
+  .status-row .k{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    min-width:74px;
+    padding-top:2px;
+    letter-spacing:.04em;
+  }
+  .status-row .v{font-size:15px;}
+
+  /* experience / projects list */
+  .entry{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:18px;
+    padding:22px 0;
+  }
+  .entry + .entry{border-top:1px solid var(--line);}
+  .entry .when{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    padding-top:3px;
+  }
+  .entry h3{margin:0 0 6px; font-size:17px; font-weight:600;}
+  .entry .meta{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--accent);
+    margin-bottom:8px;
+    display:block;
+  }
+  .entry p{color:var(--muted); font-size:14.5px; margin:0 0 10px;}
+  .stack{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    border:1px solid var(--line);
+    padding:2px 8px;
+    border-radius:4px;
+  }
+  .chip-lg{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink);
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:7px 14px;
+    border-radius:100px;
+    transition:border-color .2s;
+  }
+  .chip-lg:hover{border-color:var(--accent);}
+  .repo-link{
+    font-family:var(--mono);
+    font-size:12.5px;
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .repo-link:hover{border-color:var(--accent); color:var(--accent);}
+
+  .cert-frame{
+    display:block;
+    margin-top:14px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:8px;
+    background:var(--panel);
+    text-decoration:none;
+    transition:border-color .2s;
+  }
+  .cert-frame:hover{border-color:var(--accent);}
+  .cert-frame img{
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:6px;
+  }
+  .cert-caption{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    text-align:center;
+    padding-top:8px;
+  }
+  .inline-link{
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    transition:border-color .2s, color .2s;
+  }
+  .inline-link:hover{border-color:var(--accent); color:var(--accent);}
+
+  .status-badge{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    width:fit-content;
+    margin:32px auto 0;
+    padding:9px 18px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:100px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--muted);
+    text-align:center;
+  }
+  .live-dot{
+    position:relative;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--accent);
+    flex-shrink:0;
+  }
+  .live-dot::after{
+    content:'';
+    position:absolute;
+    inset:-5px;
+    border-radius:50%;
+    border:1px solid var(--accent);
+    animation:pulse-ring 2.2s ease-out infinite;
+  }
+  @keyframes pulse-ring{
+    0%{transform:scale(.5); opacity:.9;}
+    100%{transform:scale(1.9); opacity:0;}
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .7s cubic-bezier(.16,.8,.24,1), transform .7s cubic-bezier(.16,.8,.24,1);
+  }
+  .reveal.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  @media (max-width:600px){
+    .entry{grid-template-columns:1fr;}
+    .entry .when{padding-top:0;}
+  }
+
+  /* contact */
+  .contact-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:14px;
+    margin-top:22px;
+  }
+  .contact-card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;
+    text-decoration:none;
+    transition:border-color .2s, background .2s;
+  }
+  .contact-card:hover{border-color:var(--accent); background:var(--panel);}
+  .contact-card .k{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    display:block;
+    margin-bottom:6px;
+  }
+  .contact-card .v{font-size:15px; font-weight:500;}
+
+  footer{
+    padding:36px 0 80px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero" id="top">
+    <p class="eyebrow">Austin, TX</p>
+    <h1 class="name">Inaba Amanat</h1>
+    <p class="role">Electrical &amp; Computer Engineering — Texas Robotics Honors — The University of Texas at Austin.
+    Building at the intersection of robotics, embedded systems, and simulation.</p>
+    <div class="links">
+      <a class="pill" href="https://github.com/inabaamanat" target="_blank" rel="noopener"><span class="dot"></span>GitHub</a>
+      <a class="pill" href="https://www.linkedin.com/in/inaba-amanat" target="_blank" rel="noopener"><span class="dot"></span>LinkedIn</a>
+      <a class="pill" href="#contact"><span class="dot"></span>Contact</a>
+    </div>
+  </header>
+
+  <div class="status-badge">
+    <span class="live-dot"></span>
+    Currently: Undergraduate Researcher at <a class="inline-link" href="https://sites.utexas.edu/herolab/" target="_blank" rel="noopener">Human Enabled Robotic Technology Lab</a>
+  </div>
+
+  <section id="interests">
+    <div class="section-head"><h2>What I'm interested in</h2></div>
+    <p class="lede">Robotics, signals, and the systems that sit between hardware and software.</p>
+    <div class="stack" style="margin-top:6px; justify-content:center;">
+      <span class="chip-lg">Robotics</span>
+      <span class="chip-lg">Signal Processing</span>
+      <span class="chip-lg">Embedded Systems</span>
+      <span class="chip-lg">Controls</span>
+      <span class="chip-lg">Haptics</span>
+      <span class="chip-lg">Real-time Systems</span>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="section-head"><h2>Experience</h2></div>
+    <p class="lede">Research, leadership, and hands-on hardware work.</p>
+
+    <div class="entry">
+      <div class="when">Apr 2026 — Present</div>
+      <div>
+        <span class="meta">Longhorn Neurotech · Full-time</span>
+        <h3>Vice President Operations</h3>
+        <p>Austin, Texas Metropolitan Area.</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="when">Sep 2025 — Present</div>
+      <div>
+        <span class="meta">Longhorn Neurotech · Part-time</span>
+        <h3>Hardware — Electronics</h3>
+        <p>Helped design the drive system for an electric wheelchair using two 24V batteries, two motor drivers, and two brushed DC motors. Arduino IDE and embedded software.</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="when">May 2026 — Jul 2026</div>
+      <div>
+        <span class="meta">Texas Robotics · Full-time</span>
+        <h3>Undergraduate Research Fellow, <a class="inline-link" href="https://sites.utexas.edu/herolab/" target="_blank" rel="noopener">Human Enabled Robotics Lab</a></h3>
+        <p>Selected as one of two full-time undergraduate researchers working under Dr. Ross Neuman.</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="when">Jan 2026 — Dec 2026</div>
+      <div>
+        <span class="meta">Freshman Research Initiative · UT Austin FRI</span>
+        <h3>Undergraduate Researcher, Medical Robotics &amp; Haptics</h3>
+        <p>Designed and programmed a haptic piano system using the Hapkit platform, creating force-feedback piano keys inspired by Da Vinci surgical robots to replicate the tactile feel of pressing a real piano.</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="when">May 2026 — Aug 2026</div>
+      <div>
+        <span class="meta">Kode With Klossy · Part-time</span>
+        <h3>Technical Leadership Accelerator</h3>
+        <p>Selected as part of the founding cohort for Kode With Klossy's Technical Leadership Accelerator, a 12-week program in technical communication and leadership.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="certificates">
+    <div class="section-head"><h2>Certificates</h2></div>
+    <p class="lede">Coursework and credentials worth highlighting.</p>
+
+    <div class="entry">
+      <div class="when">Aug 2026</div>
+      <div>
+        <span class="meta">Purdue University · UT Austin · Intel Corporation</span>
+        <h3>Semiconductor Fabrication 101</h3>
+        <p>Certificate of completion for the Purdue University, UT Austin, and Intel Corporation sponsored Semiconductor Fabrication 101 course.</p>
+        <a class="cert-frame" href="https://drive.google.com/file/d/1j2ItoRiHEcXhTxX8Zlcd3bIxVf3ULqUZ/view?usp=sharing" target="_blank" rel="noopener">
+          <img src="certs/semiconductor-fabrication-101.png" alt="Semiconductor Fabrication 101 certificate of completion, awarded to Inaba Amanat">
+          <div class="cert-caption">Click to view full PDF</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-head"><h2>Projects</h2></div>
+    <p class="lede">Selected work, pulled from <a class="repo-link" href="https://github.com/inabaamanat" target="_blank" rel="noopener">github.com/inabaamanat</a>.</p>
+
+    <div class="entry">
+      <div class="when">In progress</div>
+      <div>
+        <span class="meta"><a class="inline-link" href="https://sites.utexas.edu/herolab/" target="_blank" rel="noopener">Human Enabled Robotics Lab</a> · UT Austin</span>
+        <h3>Motion Capture — Bertec Treadmill ROS 2 Application</h3>
+        <p>A ROS 2 application built around a motion-capture system and Bertec instrumented treadmill for inverse dynamics and gait analysis at the HeRo Lab.</p>
+        <div class="stack">
+          <span class="chip">ROS 2</span>
+          <span class="chip">Motion Capture</span>
+          <span class="chip">Gait Analysis</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="when">ROS 2</div>
+      <div>
+        <h3>ROS 2 ↔ Unreal Engine Bridge</h3>
+        <p>A communication framework connecting ROS 2 and Unreal Engine 5.8 using ZeroMQ and JSON, enabling real-time robotics visualization.</p>
+        <div class="stack">
+          <span class="chip">C++</span>
+          <span class="chip">ROS 2</span>
+          <span class="chip">ZeroMQ</span>
+          <span class="chip">Unreal Engine</span>
+        </div>
+        <p style="margin-top:12px;"><a class="repo-link" href="https://github.com/inabaamanat/Ros2-unreal-bridge" target="_blank" rel="noopener">View repository →</a></p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="when">FRI</div>
+      <div>
+        <h3>Haptic Piano</h3>
+        <p>Force-feedback keyboard hardware built as part of the FRI robotics stream, exploring tactile response for piano input.</p>
+        <div class="stack">
+          <span class="chip">Embedded</span>
+          <span class="chip">Haptics</span>
+        </div>
+        <p style="margin-top:12px;"><a class="repo-link" href="https://github.com/inabaamanat/Haptic-Piano-inaba-" target="_blank" rel="noopener">View repository →</a></p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="when">Kode With Klossy</div>
+      <div>
+        <h3>Technical Leadership Portfolio</h3>
+        <p>A portfolio built for Kode With Klossy's Technical Leadership Accelerator, documenting my growth in technical communication and leadership over the program.</p>
+        <p style="margin-top:12px;"><a class="repo-link" href="https://app.notion.com/p/Technical-Leadership-Portfolio-Inaba-Amanat-be4b7f8ce967835fa7d9811594f2eef5?source=copy_link" target="_blank" rel="noopener">View portfolio →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="section-head"><h2>Contact</h2></div>
+    <p class="lede">Reach out — happy to talk robotics, research, or opportunities.</p>
+    <div class="contact-grid">
+      <a class="contact-card" href="mailto:inaba1amanat@gmail.com">
+        <span class="k">EMAIL</span>
+        <span class="v">inaba1amanat@gmail.com</span>
+      </a>
+      <a class="contact-card" href="https://www.linkedin.com/in/inaba-amanat" target="_blank" rel="noopener">
+        <span class="k">LINKEDIN</span>
+        <span class="v">in/inaba-amanat</span>
+      </a>
+      <a class="contact-card" href="https://github.com/inabaamanat" target="_blank" rel="noopener">
+        <span class="k">GITHUB</span>
+        <span class="v">@inabaamanat</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Inaba Amanat — Austin, TX</span>
+  </footer>
+
+</div>
+
+<script>
+  window.addEventListener('load', ()=>{ initReveal(); });
+
+  function initReveal(){
+    const targets = document.querySelectorAll('.entry, .status-card, .contact-card, .chip-lg');
+    targets.forEach((el, i)=>{
+      el.classList.add('reveal');
+      el.style.transitionDelay = Math.min(i * 40, 240) + 'ms';
+    });
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+    targets.forEach(el=>io.observe(el));
+  }
+
+</script>
+
+</body>
+</html>
