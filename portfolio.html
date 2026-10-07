@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inaba Amanat · Technical Portfolio</title>
+<meta name="description" content="Technical portfolio: hardware and software projects in robotics, haptics, and embedded systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#161b22;
+    --panel:#1c2430;
+    --panel2:#212b38;
+    --ink:#e6edf3;
+    --muted:#8b96a5;
+    --line:#2a3340;
+    --accent:#2da8c9;
+    --accent2:#b08a5f;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --maxw: 860px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:radial-gradient(circle, #222e3b 1px, transparent 1px);
+    background-size:28px 28px;
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+  a{color:inherit;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px 100px;}
+
+  /* header */
+  .top{
+    padding:56px 0 28px;
+  }
+  .hero-panel{
+    position:relative;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--panel);
+    padding:28px 32px;
+    margin-bottom:28px;
+  }
+  .corner{
+    position:absolute;
+    width:16px; height:16px;
+    border:1.5px solid var(--accent2);
+    opacity:.6;
+  }
+  .corner.tl{top:12px; left:12px; border-right:none; border-bottom:none;}
+  .corner.tr{top:12px; right:12px; border-left:none; border-bottom:none;}
+  .corner.bl{bottom:12px; left:12px; border-right:none; border-top:none;}
+  .corner.br{bottom:12px; right:12px; border-left:none; border-top:none;}
+  .back-home{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--muted);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    margin-bottom:26px;
+  }
+  .back-home:hover{border-color:var(--accent); color:var(--accent);}
+  h1.title{
+    font-size:clamp(30px,4.5vw,42px);
+    margin:0 0 10px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:16px;
+    max-width:56ch;
+    margin:0;
+  }
+
+  /* tabs */
+  .tabs{
+    display:flex;
+    gap:4px;
+    margin:32px 0 0;
+    border-bottom:1px solid var(--line);
+  }
+  .tab-btn{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--muted);
+    background:none;
+    border:none;
+    padding:12px 18px;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    transform:translateY(1px);
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{color:var(--ink); border-color:var(--accent);}
+
+  .tab-view{display:none; padding-top:36px;}
+  .tab-view.active{display:block;}
+  .tab-intro{color:var(--muted); font-size:15px; margin:0 0 24px; max-width:60ch;}
+
+  /* project grid */
+  .project-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:16px;
+  }
+  .project-card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+    background:var(--panel);
+    cursor:pointer;
+    transition:border-color .2s, transform .2s;
+    text-align:left;
+    position:relative;
+  }
+  .project-card:not(.locked)::before{
+    content:"";
+    position:absolute;
+    top:16px; right:16px;
+    width:6px; height:6px;
+    border-radius:1px;
+    background:var(--accent2);
+  }
+  .project-card:hover{border-color:var(--accent); transform:translateY(-2px);}
+  .project-card.locked{
+    cursor:default;
+    opacity:.55;
+    background:var(--panel);
+  }
+  .project-card.locked:hover{border-color:var(--line); transform:none;}
+  .pc-tag{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    display:block;
+    margin-bottom:8px;
+  }
+  .project-card.locked .pc-tag{color:var(--muted);}
+  .pc-title{font-size:16.5px; font-weight:600; margin:0 0 8px;}
+  .pc-desc{font-size:13.5px; color:var(--muted); margin:0;}
+  .pc-status{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    margin-top:14px;
+    display:block;
+  }
+
+  /* detail view */
+  .project-detail{display:none;}
+  .project-detail.active{display:block; padding-top:36px;}
+  .detail-back{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--muted);
+    text-decoration:none;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    margin-bottom:28px;
+  }
+  .detail-back:hover{color:var(--accent);}
+
+  .detail-head{margin-bottom:32px;}
+  .detail-tag{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  h2.detail-title{
+    font-size:clamp(26px,4vw,34px);
+    margin:8px 0 12px;
+    font-weight:700;
+  }
+  .detail-summary{font-size:16px; color:var(--muted); max-width:62ch;}
+
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    margin:28px 0 36px;
+    padding:20px 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .meta-col{min-width:150px;}
+  .meta-k{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .chip{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink);
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:3px 9px;
+    border-radius:4px;
+    margin:0 6px 6px 0;
+  }
+
+  .detail-block{margin-bottom:36px;}
+  .detail-block h3{
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 14px;
+  }
+  .detail-block p{margin:0 0 14px; max-width:68ch;}
+  .detail-block ul{margin:0 0 14px; padding-left:20px;}
+  .detail-block li{margin-bottom:8px; max-width:66ch;}
+
+  .flow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--muted);
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:18px 20px;
+    line-height:2.1;
+  }
+  .flow .step{color:var(--ink);}
+  .flow .arrow{color:var(--accent);}
+
+  .media-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin:18px 0 8px;
+  }
+  figure{margin:0;}
+  figure img{
+    display:block;
+    width:100%;
+    height:auto;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+  }
+  figcaption{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:8px;
+  }
+
+  footer{
+    padding:40px 0 10px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  .circuit-wrap{
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#fff;
+    padding:20px;
+    margin:18px 0;
+  }
+  .circuit-wrap svg{display:block; width:100%; height:auto;}
+  .circuit-caption{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:10px;
+    text-align:center;
+  }
+  .status-note{
+    font-size:14px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent);
+    border-radius:6px;
+    padding:12px 16px;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+
+  .node-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+    gap:8px;
+    margin:14px 0 4px;
+  }
+  .node-chip{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink);
+    background:var(--panel2);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:8px 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="top">
+    <a class="back-home" href="index.html">&larr; Back to inabaamanat.com</a>
+
+    <div class="hero-panel">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <h1 class="title">Technical Portfolio</h1>
+      <p class="subtitle">Selected hardware and software work in robotics, haptics, and embedded systems, with the problem, approach, and outcome behind each one.</p>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="hardware">Hardware</button>
+      <button class="tab-btn" data-tab="software">Software</button>
+      <button class="tab-btn" data-tab="research">Currently Researching</button>
+    </nav>
+  </header>
+
+  <!-- ===== TAB: HARDWARE ===== -->
+  <section id="tab-hardware" class="tab-view active">
+    <p class="tab-intro">Physical systems I've built: mechatronics, embedded control, and sensor integration.</p>
+    <div class="project-grid">
+      <div class="project-card" data-open="haptic-piano">
+        <span class="pc-tag">FRI · Mechatronics</span>
+        <h3 class="pc-title">Haptic Piano</h3>
+        <p class="pc-desc">A Hapkit-based force-feedback system that recreates the feel of pressing a piano key, inspired by the da Vinci Surgical System.</p>
+      </div>
+      <div class="project-card" data-open="hap-gait">
+        <span class="pc-tag">HeRo Lab</span>
+        <h3 class="pc-title">HapGait</h3>
+        <p class="pc-desc">A synchronized acquisition system linking Bertec force plates, a treadmill, and four FLIR cameras for inverse dynamics and gait analysis.</p>
+      </div>
+      <div class="project-card" data-open="longhorn-neurotech">
+        <span class="pc-tag">Longhorn Neurotech</span>
+        <h3 class="pc-title">Electric Wheelchair Drive System</h3>
+        <p class="pc-desc">Dual-motor drive electronics for an accessible wheelchair, controlled wirelessly by joystick, EEG, or EMG input.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TAB: SOFTWARE ===== -->
+  <section id="tab-software" class="tab-view">
+    <p class="tab-intro">Software and systems-level work: control pipelines, simulation, and real-time integration.</p>
+    <div class="project-grid">
+      <div class="project-card" data-open="ros2-unreal">
+        <span class="pc-tag">HeRo Lab</span>
+        <h3 class="pc-title">ROS 2 &harr; Unreal Bridge</h3>
+        <p class="pc-desc">A middleware-agnostic communication framework streaming real-time robotics data into Unreal Engine 5.8 over ZeroMQ and JSON.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TAB: CURRENTLY RESEARCHING ===== -->
+  <section id="tab-research" class="tab-view">
+    <p class="tab-intro">Early-stage and ongoing work.</p>
+    <div class="project-grid">
+      <div class="project-card locked">
+        <span class="pc-tag">In progress</span>
+        <h3 class="pc-title">HaptiDAR</h3>
+        <p class="pc-desc">A LiDAR-based scanner that translates spatial data into haptic vibrations for blind and low-vision users.</p>
+        <span class="pc-status">Coming soon</span>
+      </div>
+      <div class="project-card locked">
+        <span class="pc-tag">In progress</span>
+        <h3 class="pc-title">Verilog Project</h3>
+        <p class="pc-desc">Hardware description language work. Details coming soon.</p>
+        <span class="pc-status">Coming soon</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DETAIL: HAPTIC PIANO ===== -->
+  <section id="detail-haptic-piano" class="project-detail">
+    <button class="detail-back" data-back="hardware">&larr; Back to Hardware</button>
+
+    <div class="detail-head">
+      <span class="detail-tag">Freshman Research Initiative · Mechatronics</span>
+      <h2 class="detail-title">Haptic Piano</h2>
+      <p class="detail-summary">A force-feedback system built on the Hapkit platform that recreates the physical sensation of pressing a piano key (initial light resistance, increasing stiffness, a firm stop, and a spring-like return) using a motor-driven haptic loop rather than a real piano mechanism.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-col">
+        <div class="meta-k">TEAM</div>
+        <div>4-person team · FRI Robotics stream</div>
+      </div>
+      <div class="meta-col">
+        <div class="meta-k">HARDWARE</div>
+        <div>
+          <span class="chip">Hapkit</span>
+          <span class="chip">Arduino Uno</span>
+          <span class="chip">DC Motor</span>
+          <span class="chip">Rotary Encoder</span>
+          <span class="chip">3D-Printed Key</span>
+          <span class="chip">IR Sensors</span>
+        </div>
+      </div>
+      <div class="meta-col">
+        <div class="meta-k">SKILLS</div>
+        <div>
+          <span class="chip">Haptic Control</span>
+          <span class="chip">Real-Time Embedded C</span>
+          <span class="chip">Sensor Integration</span>
+          <span class="chip">Mechanical Prototyping</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h3>The goal</h3>
+      <p>In robotic surgery, systems like the da Vinci Surgical System let a surgeon feel resistance and pressure through a machine, even though their hands never touch tissue directly. That idea, recreating a physical sensation entirely through motor-controlled force, was the starting point for this project.</p>
+      <p>A piano key was the test case: it doesn't push back with constant force. It starts with light resistance, stiffens as it's pressed further, and hits a firm stop at the bottom. The goal wasn't to build a working piano; it was to see whether a haptic device could reproduce that specific, familiar feeling convincingly enough that someone pressing it would recognize it.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>What the Hapkit provided</h3>
+      <p>Rather than building a force-feedback mechanism from scratch, we built on the Hapkit, an open-source haptic device platform. It gave us three things already built in:</p>
+      <ul>
+        <li><strong>Motorized force feedback</strong> through a capstan (cable-driven) transmission, so the motor could push back against the user's hand instead of just moving a handle.</li>
+        <li><strong>Encoder-based position sensing</strong> to track how far the handle had rotated, which we converted into a physical displacement value in software.</li>
+        <li><strong>A mechanical transmission system</strong> linking the motor to the handle, which gave us a stable physical interface to attach a custom key to.</li>
+      </ul>
+      <p>On top of that base, we designed and 3D-printed a custom piano-key attachment that mounted onto the Hapkit's handle: built as a simple rectangular block, constrained to stay light enough that it wouldn't throw off the motor's force calibration.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>Approach</h3>
+      <p>We modeled the key as a spring-damper system: force increases with displacement to simulate stiffness, rises sharply near the bottom of the travel to simulate a hard stop, and includes a damping term to reduce oscillation and keep the motion feeling physical rather than jittery.</p>
+      <div class="flow">
+        <span class="step">Encoder reads rotation</span> <span class="arrow">→</span>
+        <span class="step">Position calculated</span> <span class="arrow">→</span>
+        <span class="step">Velocity estimated (filtered derivative)</span> <span class="arrow">→</span>
+        <span class="step">Haptic mode selected</span> <span class="arrow">→</span>
+        <span class="step">Force computed</span> <span class="arrow">→</span>
+        <span class="step">PWM sent to motor</span> <span class="arrow">→</span>
+        <span class="step">User feels resistance</span>
+      </div>
+      <p style="margin-top:18px;">The control loop supported four switchable haptic environments (Piano Key, Hard Stop + Vibrate, Push Left, and Push Right), each computing its own force response from the same position and velocity inputs.</p>
+      <p>We also tried to upgrade the position sensing with IR sensors, aiming for continuous (analog) measurement instead of the encoder's discrete steps, which would have allowed finer force scaling and, eventually, sound that varied with how hard the key was pressed. We sketched out the intended sensor geometry before building it:</p>
+    </div>
+
+    <div class="media-grid">
+      <figure>
+        <img src="images/haptic-piano-ir-sensor-sketch.png" alt="Hand-drawn diagram of the planned IR sensor and motor-shaft piano key mechanism">
+        <figcaption>Early concept sketch for the IR sensor–based key sensing approach</figcaption>
+      </figure>
+      <figure>
+        <img src="images/haptic-piano-key-cad.png" alt="CAD render of the 3D-printed piano key attachment designed to mount on the Hapkit">
+        <figcaption>CAD model of the 3D-printed key attachment</figcaption>
+      </figure>
+      <figure>
+        <img src="images/haptic-piano-bench-setup.png" alt="Bench setup showing the Hapkit, Arduino, breadboard, and wiring for the haptic piano system">
+        <figcaption>Full system on the bench: Hapkit, Arduino Uno, and breadboard wiring</figcaption>
+      </figure>
+    </div>
+
+    <div class="detail-block" style="margin-top:32px;">
+      <h3>What we achieved</h3>
+      <ul>
+        <li>Built a working single-key haptic interface with real-time force feedback across four switchable haptic environments.</li>
+        <li>Successfully reproduced the core piano-key feel: light initial resistance, increasing stiffness, a firm end stop, and spring-like return.</li>
+        <li>Diagnosed a sensor procurement issue: the IR sensors we'd sourced were digital, not analog, so they could only report on/off rather than continuous position. We validated the sensor logic on its own, then fell back to the Hapkit's encoder for the final control loop, which held up reliably.</li>
+        <li>Presented the system at Demo Day and fielded live technical questions on sensing, actuation, and what made the feedback feel realistic.</li>
+      </ul>
+    </div>
+
+    <div class="detail-block">
+      <h3>What's next</h3>
+      <p>Planned extensions include replacing the digital IR sensors with analog ones for continuous force scaling, expanding from one key to a multi-key system (and working out whether each key needs its own motor), adding sound output through a DAC and speaker tied to key displacement, and refining the force curve to recreate a real piano's "escapement" drop-off partway through the keypress.</p>
+    </div>
+  </section>
+
+  <!-- ===== DETAIL: HAPGAIT ===== -->
+  <section id="detail-hap-gait" class="project-detail">
+    <button class="detail-back" data-back="hardware">&larr; Back to Hardware</button>
+
+    <div class="detail-head">
+      <span class="detail-tag"><a class="inline-link" href="https://sites.utexas.edu/herolab/" target="_blank" rel="noopener">Human Enabled Robotics Lab</a> · UT Austin</span>
+      <h2 class="detail-title">HapGait</h2>
+      <p class="detail-summary">A synchronized acquisition system linking a Bertec instrumented treadmill, dual force plates, and a four-camera motion-capture array on a single hardware clock, built to support inverse dynamics and gait analysis.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-col">
+        <div class="meta-k">HARDWARE</div>
+        <div>
+          <span class="chip">NI USB-6218 DAQ</span>
+          <span class="chip">Teensy</span>
+          <span class="chip">FLIR Blackfly S ×4</span>
+          <span class="chip">Bertec Treadmill</span>
+        </div>
+      </div>
+      <div class="meta-col">
+        <div class="meta-k">SOFTWARE</div>
+        <div>
+          <span class="chip">Python</span>
+          <span class="chip">PySide6 / Qt</span>
+          <span class="chip">NI-DAQmx</span>
+          <span class="chip">Spinnaker / PySpin</span>
+          <span class="chip">OpenCV</span>
+        </div>
+      </div>
+      <div class="meta-col">
+        <div class="meta-k">SKILLS</div>
+        <div>
+          <span class="chip">Hardware Triggering &amp; Sync</span>
+          <span class="chip">Real-Time Acquisition</span>
+          <span class="chip">Camera Calibration</span>
+          <span class="chip">Fault-Tolerant Systems</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h3>The problem</h3>
+      <p>Inverse dynamics needs one spatial and temporal frame: force, center of pressure, and reconstructed joint positions all have to line up in time and space, or the resulting joint angles and moments are wrong. That's straightforward to say and hard to build, since it means a four-camera array, a dual-belt force-sensing treadmill, and a data acquisition card all have to agree on the same clock, down to a fraction of a frame, for an entire walking trial.</p>
+      <p>HapGait is the acquisition system built to do that: a native Windows application that drives the cameras, the treadmill, and the force plates together, checks whether they actually stayed in sync, and only accepts a trial once that's verified.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>Hardware synchronization</h3>
+      <p>A Teensy microcontroller generates a shared hardware trigger pulse and fans it out two ways: directly into all four FLIR cameras, so every camera exposes its frame at the same instant, and into a counter input on the NI USB-6218 DAQ, so each analog force sample can be matched against the exact pulse count the cameras saw. That sidesteps needing a dedicated high-speed analog trigger channel: the DAQ just has to count edges accurately, which it does well.</p>
+      <p>The diagram below reflects the as-built wiring on the bench (force-plate and EMG inputs on the left into the DAQ, Teensy and trigger circuitry on the breadboard, USB out to the host PC).</p>
+    </div>
+
+    <div class="circuit-wrap">
+      <svg viewBox="0 0 720 440" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#6b6b68"></path>
+          </marker>
+          <marker id="arrowAccent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#2da8c9"></path>
+          </marker>
+        </defs>
+
+        <!-- Force plates -->
+        <rect x="20" y="30" width="150" height="56" rx="8" fill="#efece7" stroke="#d9d6d0"></rect>
+        <text x="95" y="54" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">Bertec Force</text>
+        <text x="95" y="68" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">Plates (L / R)</text>
+        <text x="95" y="96" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#6b6b68">12 analog channels</text>
+
+        <!-- Teensy -->
+        <rect x="20" y="180" width="150" height="56" rx="8" fill="#efece7" stroke="#d9d6d0"></rect>
+        <text x="95" y="213" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">Teensy</text>
+        <text x="95" y="226" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#6b6b68">trigger generator</text>
+
+        <!-- NI DAQ -->
+        <rect x="280" y="100" width="160" height="70" rx="8" fill="#fff" stroke="#2da8c9" stroke-width="1.5"></rect>
+        <text x="360" y="128" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">NI USB-6218</text>
+        <text x="360" y="142" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">DAQ</text>
+        <text x="360" y="158" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#6b6b68">analog in + counter</text>
+
+        <!-- Cameras -->
+        <rect x="280" y="280" width="160" height="70" rx="8" fill="#efece7" stroke="#d9d6d0"></rect>
+        <text x="360" y="308" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">FLIR Blackfly S</text>
+        <text x="360" y="322" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">×4 cameras</text>
+        <text x="360" y="338" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#6b6b68">hardware triggered</text>
+
+        <!-- Treadmill -->
+        <rect x="280" y="20" width="160" height="56" rx="8" fill="#efece7" stroke="#d9d6d0"></rect>
+        <text x="360" y="44" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#1c1c1e">Bertec Treadmill</text>
+        <text x="360" y="58" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#6b6b68">belt control, TCP</text>
+
+        <!-- PC / HapGait -->
+        <rect x="540" y="150" width="160" height="80" rx="8" fill="#1c1c1e"></rect>
+        <text x="620" y="183" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#f7f6f4">HapGait</text>
+        <text x="620" y="197" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#d9d6d0">host PC / GUI</text>
+        <text x="620" y="211" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#d9d6d0">PySide6</text>
+
+        <!-- data lines -->
+        <path d="M95,86 L95,140 L280,140" fill="none" stroke="#6b6b68" stroke-width="1.5" marker-end="url(#arrow)"></path>
+        <path d="M440,135 L540,180" fill="none" stroke="#6b6b68" stroke-width="1.5" marker-end="url(#arrow)"></path>
+        <path d="M440,315 L540,210" fill="none" stroke="#6b6b68" stroke-width="1.5" marker-end="url(#arrow)"></path>
+        <path d="M360,76 L360,100" fill="none" stroke="#6b6b68" stroke-width="1.5" marker-end="url(#arrow)"></path>
+        <path d="M440,48 L540,165" fill="none" stroke="#6b6b68" stroke-width="1.5" marker-end="url(#arrow)"></path>
+
+        <!-- shared trigger line (accent) -->
+        <path d="M170,205 L240,205 L240,135 L280,135" fill="none" stroke="#2da8c9" stroke-width="1.8" marker-end="url(#arrowAccent)"></path>
+        <path d="M170,208 L250,208 L250,315 L280,315" fill="none" stroke="#2da8c9" stroke-width="1.8" marker-end="url(#arrowAccent)"></path>
+        <text x="205" y="250" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#2da8c9">shared trigger pulse</text>
+      </svg>
+      <p class="circuit-caption">Trigger path (cyan) shown separately from data paths (gray): one Teensy pulse keeps cameras and force samples on a common clock.</p>
+    </div>
+
+    <figure>
+      <img src="images/hap-gait-daq-wiring.jpg" alt="Bench wiring showing the NI USB-6218 DAQ, breadboard with Teensy, and force plate/EMG input cables at the HeRo Lab">
+      <figcaption>As-built bench wiring: NI USB-6218 DAQ with force-plate inputs (left) and Teensy trigger circuitry on the breadboard (right)</figcaption>
+    </figure>
+
+    <div class="detail-block" style="margin-top:28px;">
+      <h3>Software</h3>
+      <p>HapGait itself is a native Windows desktop app written in Python with a PySide6 (Qt) interface. It's the single control surface for the whole rig: a live walking view with center-of-pressure trail and gait-symmetry/phase detection, per-device status so the operator can see at a glance whether force plates, treadmill, and cameras are each actually connected, and a guided workflow for recording and reviewing trials. Each device connects independently: a missing camera or an unplugged Teensy never blocks the others from working.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>Camera calibration</h3>
+      <p>The four-camera array is calibrated using a custom 3D-printed cube covered in ArUco markers. The app guides the operator to move the cube through under-covered image regions and poses, saves synchronized capture sets, then solves per-camera intrinsics and jointly refines every camera's position with a robust global bundle adjustment, validated against poses that were held out of the fit.</p>
+      <p class="status-note">Current status: the calibration pipeline is implemented and running end to end, but the most recent capture session hasn't yet passed the project's accuracy gates (held-out reprojection error and known 3D distance checks). That's the active debugging focus right now, not a finished result.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>Fault tolerance</h3>
+      <p>Because this runs with hardware that can be physically moving, the system is built so a single failure can't take the whole trial down: optional dependencies (a missing camera SDK, a missing DAQ driver) degrade gracefully instead of crashing the app, a failing camera's own write queue is isolated so it can't block force-data recording, telemetry from the treadmill is range-checked before it's trusted rather than taken at face value, and every trial automatically gets a quality report checking frame gaps, trigger-ID matching, and clock drift, so a trial is explicitly marked passed or failed rather than silently accepted.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>What's working now</h3>
+      <ul>
+        <li>Verified end-to-end hardware trigger sync across all four cameras: a dedicated test recorded 829 complete, gap-free frames per camera, exactly matching 829 Teensy pulses at 165 FPS.</li>
+        <li>Replaced an earlier single-channel acquisition script (reading one voltage at 100 Hz with no real force scaling) with a corrected 12-channel, hardware-clocked pipeline at 2,000 samples/second/channel, with proper force/moment scaling and corrected bilateral center-of-pressure math.</li>
+        <li>Built the full guided camera-calibration capture flow and bundle-adjustment solver, from image collection through held-out validation.</li>
+      </ul>
+    </div>
+
+    <div class="detail-block">
+      <h3>What's next</h3>
+      <p>The immediate next step is finishing camera-array calibration to the point where it reliably passes the project's validation gates (reprojection error, known 3D distance checks, and repeatability across re-calibrations). After that, the plan is to build out the inverse dynamics pipeline itself, reconstructing 3D pose from the camera array into a scaled musculoskeletal model and combining it with the synchronized force data to compute joint angles and moments, and to integrate IMUs as an additional motion-tracking input alongside the camera array.</p>
+    </div>
+  </section>
+
+  <!-- ===== DETAIL: LONGHORN NEUROTECH ===== -->
+  <section id="detail-longhorn-neurotech" class="project-detail">
+    <button class="detail-back" data-back="hardware">&larr; Back to Hardware</button>
+
+    <div class="detail-head">
+      <span class="detail-tag">Longhorn Neurotech · Multi-team project</span>
+      <h2 class="detail-title">Electric Wheelchair Drive System</h2>
+      <p class="detail-summary">An electric wheelchair built to give people with limited mobility, including those with paralysis, accessible movement through joystick, EEG, or EMG control, developed across Longhorn Neurotech's electronics, design, and hardware-software integration teams.</p>
+    </div>
+
+    <p class="status-note">This project belongs to Longhorn Neurotech, a UT Austin student organization, and was built across multiple teams. What's shown here is limited to the drive electronics work, kept at a high level out of respect for the organization's ownership of the full system.</p>
+
+    <div class="meta-row">
+      <div class="meta-col">
+        <div class="meta-k">HARDWARE</div>
+        <div>
+          <span class="chip">Arduino Nano</span>
+          <span class="chip">IBT-2 Motor Drivers ×2</span>
+          <span class="chip">Brushed DC Motors ×2</span>
+          <span class="chip">24V Batteries ×2</span>
+        </div>
+      </div>
+      <div class="meta-col">
+        <div class="meta-k">SKILLS</div>
+        <div>
+          <span class="chip">Motor Control</span>
+          <span class="chip">Power Electronics</span>
+          <span class="chip">Bench Testing</span>
+          <span class="chip">Cross-Team Collaboration</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h3>The goal</h3>
+      <p>Provide accessible motion to people with limited mobility, such as those with paralysis, through a wheelchair that can be driven by whichever input works for the user: a joystick, EEG signals, or EMG signals, all communicating wirelessly into one control system. The chair supports five motion states: stopped, moving forward, moving backward, turning left, and turning right.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>Drive electronics</h3>
+      <p>My contribution was on the drive system: wiring and tuning the dual-motor electronics that actually move the chair. The system uses two 24V batteries and two IBT-2 motor driver boards, each driving one of the chair's brushed DC motors, with an Arduino Nano reading the incoming control signal and generating the motor commands. Fuses and a kill switch sit inline on the power side for safety.</p>
+    </div>
+
+    <div class="media-grid">
+      <figure>
+        <img src="images/longhorn-neurotech-drive-circuit.png" alt="Circuit diagram of the dual-motor wheelchair drive system showing two IBT-2 motor drivers, an Arduino Nano, batteries, fuses, and a joystick input module">
+        <figcaption>Dual-motor drive circuit: two IBT-2 drivers, an Arduino Nano, and independent battery/fuse branches for each motor</figcaption>
+      </figure>
+      <figure>
+        <img src="images/longhorn-neurotech-bench-test.png" alt="Bench test of a single motor and driver branch with a lab power supply, breadboard, and joystick input">
+        <figcaption>Bench-testing a single motor/driver branch, checking voltage and current draw before full integration</figcaption>
+      </figure>
+    </div>
+
+    <div class="detail-block" style="margin-top:28px;">
+      <h3>Signal pipeline</h3>
+      <div class="flow">
+        <span class="step">Joystick Signal Acquisition</span> <span class="arrow">&rarr;</span>
+        <span class="step">Software Processing &amp; Control Logic</span> <span class="arrow">&rarr;</span>
+        <span class="step">Motor Output</span>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h3>Where this fits</h3>
+      <p>The drive electronics are one piece of a larger safety and control architecture built across the project's teams: EEG, EMG, and joystick inputs all feed into a shared control system, an ESP32-based collision detection layer reads four ultrasonic sensors around the chair to catch obstacles, and that safety layer sits between the user's input and the motor control this project's drive system handles.</p>
+      <figure>
+        <img src="images/longhorn-neurotech-system-diagram.png" alt="System diagram showing the BCI control system, ESP32-based object collision detection, and wheelchair motor and safety control working together">
+        <figcaption>The wheelchair's broader control architecture: BCI/joystick input, collision detection, and motor and safety control</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===== DETAIL: ROS 2 UNREAL BRIDGE ===== -->
+  <section id="detail-ros2-unreal" class="project-detail">
+    <button class="detail-back" data-back="software">&larr; Back to Software</button>
+
+    <div class="detail-head">
+      <span class="detail-tag"><a class="inline-link" href="https://sites.utexas.edu/herolab/" target="_blank" rel="noopener">Human Enabled Robotics Lab</a> · UT Austin</span>
+      <h2 class="detail-title">ROS 2 &harr; Unreal Bridge</h2>
+      <p class="detail-summary">A modular communication framework for streaming structured, real-time data into Unreal Engine 5.8, built to bridge robotics software and a game engine without locking either side to a specific middleware.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-col">
+        <div class="meta-k">STACK</div>
+        <div>
+          <span class="chip">Python</span>
+          <span class="chip">ZeroMQ</span>
+          <span class="chip">JSON</span>
+          <span class="chip">ROS 2 Jazzy</span>
+          <span class="chip">Unreal Engine 5.8</span>
+        </div>
+      </div>
+      <div class="meta-col">
+        <div class="meta-k">SKILLS</div>
+        <div>
+          <span class="chip">Middleware-Agnostic Design</span>
+          <span class="chip">Real-Time Messaging</span>
+          <span class="chip">ROS 2 Package Architecture</span>
+          <span class="chip">Systems Integration</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h3>The goal</h3>
+      <p>Get real-time robotics data into Unreal Engine 5.8 for live visualization, without hard-coupling that visualization to one specific robotics middleware. The requirement wasn't just "make it work with ROS 2 right now," it was "make the Unreal side never have to know or care what's producing the data."</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>Approach</h3>
+      <p>The bridge communicates over ZeroMQ, with messages structured as JSON. That combination was chosen specifically because it's middleware-agnostic: ZeroMQ doesn't care what's on either end of the socket, and JSON is just structured text, so neither side has to link against ROS 2 at all. The current implementation uses a Python publisher to validate the full pipeline end to end. The architecture is built so that publisher can be swapped for a native ROS 2 Jazzy node later without changing anything on the Unreal side: as far as Unreal is concerned, it's still just JSON arriving over a socket.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>What I learned</h3>
+      <ul>
+        <li>Designing an interface around a transport and data format instead of a specific framework, so the producer and consumer stay decoupled and either side can change independently.</li>
+        <li>Validating a system incrementally: proving the communication pipeline with a simple Python publisher first, instead of committing to the full ROS 2 integration before knowing the pipeline worked at all.</li>
+        <li>Structuring a real-time system as focused, single-responsibility packages rather than one monolith, which made it possible to swap, test, or hand off individual pieces (a driver, a controller, an interface definition) without the rest of the system changing.</li>
+        <li>Getting external, real-time data into a live Unreal Engine scene, which sits outside the usual ROS 2 toolchain and needed its own learning curve on the Unreal side.</li>
+      </ul>
+    </div>
+
+    <div class="detail-block">
+      <h3>Where this fits</h3>
+      <p>This bridge is one package inside a larger ROS 2 workspace I built for the HeRo Lab's treadmill and motion-capture system, the same system behind the <a class="inline-link" href="#" onclick="openProject('hap-gait'); return false;">HapGait</a> project:</p>
+      <div class="node-grid">
+        <span class="node-chip">live_mocap</span>
+        <span class="node-chip">ros2_unreal_bridge</span>
+        <span class="node-chip">treadmill_bringup</span>
+        <span class="node-chip">treadmill_controller</span>
+        <span class="node-chip">treadmill_daq</span>
+        <span class="node-chip">treadmill_driver</span>
+        <span class="node-chip">treadmill_gait</span>
+        <span class="node-chip">treadmill_gui</span>
+        <span class="node-chip">treadmill_hilo</span>
+        <span class="node-chip">treadmill_imu</span>
+        <span class="node-chip">treadmill_interfaces</span>
+        <span class="node-chip">treadmill_vision</span>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h3>What's next</h3>
+      <p>Completing the transition from the Python validation publisher to a native ROS 2 Jazzy node, with no changes required on the Unreal-side communication layer.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Inaba Amanat · Austin, TX</span>
+  </footer>
+
+</div>
+
+<script>
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabViews = document.querySelectorAll('.tab-view');
+  const detailViews = document.querySelectorAll('.project-detail');
+  const projectCards = document.querySelectorAll('.project-card[data-open]');
+  const backBtns = document.querySelectorAll('[data-back]');
+
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabBtns.forEach(b=>b.classList.remove('active'));
+      tabViews.forEach(v=>v.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      detailViews.forEach(d=>d.classList.remove('active'));
+    });
+  });
+
+  function openProject(id){
+    tabViews.forEach(v=>v.classList.remove('active'));
+    detailViews.forEach(d=>d.classList.remove('active'));
+    const detail = document.getElementById('detail-' + id);
+    if(detail){
+      detail.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  }
+  window.openProject = openProject;
+
+  projectCards.forEach(card=>{
+    card.addEventListener('click', ()=>openProject(card.dataset.open));
+  });
+
+  backBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      detailViews.forEach(d=>d.classList.remove('active'));
+      document.getElementById('tab-' + btn.dataset.back).classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+</script>
+
+</body>
+</html>
